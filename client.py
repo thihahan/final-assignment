@@ -4,7 +4,7 @@ import ast
 class Client:
     def __init__(self, client_mes):
         self.target_ip = 'localhost'
-        self.target_port = 8000
+        self.target_port = 8008
         self.message = client_mes
 
     def runClient(self):

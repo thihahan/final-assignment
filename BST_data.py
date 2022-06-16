@@ -84,5 +84,4 @@ root = insertData(root, "zaw", 'passcode')
 root = insertData(root, 'zawyehan', '3541')
 # create user from clients
 
-
 root = insertData(root, 'aungkyawtun', '1234')

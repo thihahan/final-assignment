@@ -1,11 +1,12 @@
 import socket
 import ast
 from BST_data import root, searching, insertData, delete
+import re
 # create Server
 class Server:
     def __init__(self):
         self.server_ip = 'localhost'
-        self.server_port = 8000
+        self.server_port = 8008
 
     def runserver(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -26,9 +27,11 @@ class Server:
                 # try method is use for user_dict variable if message is not dictionary get an error
                 user_dict = ast.literal_eval(message)
                 # sign up
-                if 'passcode2' in user_dict.keys():
-                    print("I am sign up")
+                if 'passcode2' in user_dict.keys(): 
                     global root
+                    if re.search('[ . ^ $ * + ? {} () \ | - _ /]', user_dict['username']) is not None:
+                        client.send(bytes("Use only words and numbers", 'utf-8'))
+                        return
                     user = searching(root, user_dict['username'])
                     if user is None:
                         # for temporary
@@ -43,12 +46,18 @@ class Server:
 
                 # check account
                 elif 'check' in user_dict.keys():
+                    if re.search('[ . ^ $ * + ? {} () \ | - _ /]', user_dict['username']) is not None:
+                        client.send(bytes("username is invalid", 'utf-8'))
+                        return
                     if searching(root, user_dict['username']):
                         client.send(bytes("You can log in", 'utf-8'))
                     else:
                         client.send(bytes("There is no user", 'utf-8'))
                 # delete account
                 elif 'delete' in user_dict.keys():
+                    if re.search('[ . ^ $ * + ? {} () \ | - _ /]', user_dict['username']) is not None:
+                        client.send(bytes("username is invalid", 'utf-8'))
+                        return
                     user = searching(root, user_dict['username'])
                     if user is not None:
                         username = user_dict['username']
@@ -65,6 +74,9 @@ class Server:
 
                 # login account
                 elif searching(root, user_dict['username']):
+                    if re.search('[ . ^ $ * + ? {} () \ | - _ /]', user_dict['username']) is not None:
+                        client.send(bytes("username is invalid", 'utf-8'))
+                        return
                     user = searching(root, user_dict['username'])
                     if user_dict['passcode'] == user.passcode:
                         client.send(bytes("login successfully", 'utf-8'))
@@ -73,7 +85,9 @@ class Server:
                 else:
                     client.send(bytes("There is no user ", 'utf-8'))
             except:
-                client.send(bytes(message, 'utf-8'))
+                if message == 'Have a nice day!':
+                    client.send(bytes(message, 'utf-8'))
+                client.send(bytes("", 'utf-8'))
 
 
 if __name__ == '__main__':

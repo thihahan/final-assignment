@@ -23,9 +23,15 @@ def sort_string(string_one, string_two):
 def compare_string(first, second, index, final):
     if index == final:
         return 0
+    if first[index].isnumeric() or second[index].isnumeric():
+        if int(first[index]) < int(second[index]):
+            return first
+        elif int(first[index]) > int(second[index]):
+            return second
+        else:
+            return compare_string(first, second, index + 1, final)
     if alphabet[first[index]] < alphabet[second[index]]:
         return first
     if alphabet[first[index]] > alphabet[second[index]]:
         return second
     return compare_string(first, second, index+1, final)
-
